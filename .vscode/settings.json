@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "ostream": "cpp",
+        "iostream": "cpp",
+        "*.tcc": "cpp"
+    },
+    "cSpell.words": [
+        "bnode",
+        "deleteb",
+        "freebnode",
+        "getbnode",
+        "insertb",
+        "prevb"
+    ]
+}
