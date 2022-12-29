@@ -34,27 +34,28 @@ void freebnode(bnode b){
     delete b;
 }
 
- void insertfirst(bnode *head, bnode b){
+ void insertfirst(bnode *head, bnode pos){
      if(*head ==NULL)
-     {*head = b;
-     b-> nxt =NULL;
+     {*head = pos;
+     pos-> nxt =NULL;
      }
      else{
-       b-> nxt = *head;
-      *head = b;
+      pos->nxt = *head;
+      *head = pos;
+      last->nxt=NULL;
      }
  }
-   void insertb(bnode *head, bnode p){
+   void insertb(bnode *head, bnode pos){
      if(*head ==NULL)
-     insertfirst(&(*head), b);
+     insertfirst(&(*head), pos);
      else{
       last= *head;
       while(last->nxt!=NULL)
       {
-          last =last->nxt;}
-          last->nxt= b;
-          b->nxt = NULL;
-     
+          last =last->nxt;
+    }
+          last->nxt= pos;
+          pos->nxt = NULL;   
   }
    }
 
@@ -98,7 +99,7 @@ bnode prevb(bnode head, bnode b2, bnode &b3, string bid){
         while (head!= NULL)
         {cout <<"\n**********\n";
             cout << head->b_id<<", "<< head->b_name<<", "<< head->b_a_name<<", "<< head->b_st;
-        head = head->nxt;
+            head = head->nxt;
         }
         }
         else
@@ -107,17 +108,16 @@ bnode prevb(bnode head, bnode b2, bnode &b3, string bid){
 void load(bnode *head){
         booktbl.open("BookTable.txt", ios::in);
         char row[100];
-        char s1[5];
-        char s2[20];
-        char s3[20];
-        char s4[3];
         b = getbnode();
             booktbl >>row;
             int j=0;
             int i=0;
-            
             while (row[j]!='\0')
             {
+        char s1[20];
+        char s2[20];
+        char s3[20];
+        char s4[10];
             while (row[j]!='.')
             {
                 s1[i]=row[j];
@@ -149,9 +149,10 @@ void load(bnode *head){
                 j++;
             }
             b->b_st= s4;
-            cout<<b->b_id<<", "<< b->b_name<<", "<< b->b_a_name<<", "<<b->b_st<<endl;
             j++; i=0;
-            insertb(head,b); 
+            insertfirst(&(*head), b); 
+            cout << b->b_id<<", "<< b->b_name<<", "<< b->b_a_name<<", "<< b->b_st<<endl;
+            insertfirst(&(*head), b); 
           }
         booktbl.close();
 }
