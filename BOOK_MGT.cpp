@@ -23,15 +23,18 @@ bool found;
 void create(bnode *head){
     *head = NULL;
 }
+
 bool is_empty(bnode head){
     if(head ==NULL)
     return true;
     else 
     return false; 
 }
+
 bnode getbnode(){
     return new book; 
 }
+
 void freebnode(bnode b){
     delete b;
 }
@@ -60,6 +63,63 @@ void freebnode(bnode b){
   }
    }
 
+
+void updateb (bnode *head, bnode b, bnode prev){
+    
+      a:
+      cout<<"which part to update?\n1.Book ID\n2.Book Name\n3.Book A_Name\n4.Book status\n5.student id\n";
+      cin>>ch;
+      switch (ch)
+      {
+    case 1:
+      cout <<"Enter the book Id\n";
+      cin>>b_id2;
+      b->b_id=b_id2;
+        break;
+    case 2:
+      cout <<"Enter the book Name\n";
+      cin>>b_name2;
+      b->b_name=b_name2;
+      break;
+    case 3:
+      cout <<"Enter the book Author Name\n";
+      cin>>b_a_name2;
+      b->b_a_name=b_a_name2;
+        break;
+    case 4:
+    {
+      cout <<"Enter the book status\n";
+      cin>>b_st2;
+      b->b_st=b_st2;
+      if(b_st2 == "A"){
+        b->s_id ='\0';
+      }
+      else if(b->b_st == "r")
+      {
+        cout <<"Enter the Id of the student\n";
+      cin >>s_id2;
+      b->s_id=s_id2;
+      }
+    }
+      break;
+    case 5:
+     if(b->b_st == "r")
+      {
+      cout <<"Enter the student id\n";
+      cin>>s_id2;
+      b->s_id=s_id2;
+      }
+      else {
+        cout<<"The book is available\n";
+        goto a;
+      }
+        break;
+      default:
+      cout <<"wrong input\n";
+      
+        break;
+      }
+     }
 void deleteb (bnode *head, bnode b, bnode prev){
      if(prev ==NULL)
      {
@@ -91,7 +151,7 @@ bnode prevb(bnode head, bnode b2, bnode &b3, string bid){
             head = head ->nxt;
         }
      }
-
+     
  return b2;
  }
  void display(bnode head){
@@ -204,7 +264,9 @@ void load(bnode *head){
      cout<< "2.Delete\n";
      cout<< "3.Display\n";
      cout<< "4.Save\n";
-     cout<< "5.Exit\n";
+     cout<< "5.Update\n";
+     cout<< "6.Search\n";
+     cout<< "7.Exit\n";
      cout<< "\nEnter your choice\n";
      cin>>ch;
      return ch;
@@ -213,6 +275,7 @@ int main(){
     create(& head);
     load(&head);
     do{
+
         ch =menu();
         switch (ch)
         {
@@ -259,11 +322,30 @@ int main(){
         save(head);
         break;
         case 5:
+        cout<<"Enter the Book ID of the book to be updated\n";
+        cin>>b_id2;
+        b= prevb(head,b2,b3,b_id2);
+        if(b!=NULL)
+            updateb(&head,b,b3);
+            else
+            cout<<"No Book by that ID";
+        break;
+        case 6:
+        cout<<"Enter the Book ID of the book to be searched\n";
+        cin>>b_id2;
+        b=prevb(head,b2,b3,b_id2);
+        cout << b->b_id<<"     "<< b->b_name<<"       "<< b->b_a_name<<"     "<< b->b_st;
+            if(b->b_st=="r"){
+                cout<<"     "<<b->s_id;
+            }
+      cout<<endl;
+      break;
+        case 7:
         cout<<"Good Bye!";
         break;
         default:
             break;
         }
-    }while(ch!=5);
+    }while(ch!=7);
     return 0;
 }
