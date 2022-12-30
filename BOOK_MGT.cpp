@@ -34,28 +34,27 @@ void freebnode(bnode b){
     delete b;
 }
 
- void insertfirst(bnode *head, bnode pos){
+ void insertfirst(bnode *head, bnode b){
      if(*head ==NULL)
-     {*head = pos;
-     pos-> nxt =NULL;
+     {*head = b;
+     b-> nxt =NULL;
      }
      else{
-      pos->nxt = *head;
-      *head = pos;
-      last->nxt=NULL;
+      b-> nxt = *head;
+      *head = b;
      }
  }
-   void insertb(bnode *head, bnode pos){
+   void insertb(bnode *head, bnode b){
      if(*head ==NULL)
-     insertfirst(&(*head), pos);
+     insertfirst(&(*head), b);
      else{
       last= *head;
       while(last->nxt!=NULL)
       {
-          last =last->nxt;
-    }
-          last->nxt= pos;
-          pos->nxt = NULL;   
+          last =last->nxt;}
+          last->nxt= b;
+          b->nxt = NULL;
+     
   }
    }
 
@@ -108,16 +107,24 @@ bnode prevb(bnode head, bnode b2, bnode &b3, string bid){
 void load(bnode *head){
         booktbl.open("BookTable.txt", ios::in);
         char row[100];
-        b = getbnode();
+        
             booktbl >>row;
             int j=0;
             int i=0;
-            while (row[j]!='\0')
-            {
         char s1[20];
         char s2[20];
         char s3[20];
-        char s4[10];
+        char s4[20];
+            while (row[j]!='\0')
+            {
+        b = getbnode();
+        for(int a=0;a<20;a++){
+            s1[a]='\0';
+            s2[a]='\0';
+            s3[a]='\0';
+            s4[a]='\0';
+        }
+        
             while (row[j]!='.')
             {
                 s1[i]=row[j];
@@ -150,9 +157,7 @@ void load(bnode *head){
             }
             b->b_st= s4;
             j++; i=0;
-            insertfirst(&(*head), b); 
-            cout << b->b_id<<", "<< b->b_name<<", "<< b->b_a_name<<", "<< b->b_st<<endl;
-            insertfirst(&(*head), b); 
+            insertb(&(*head), b);  
           }
         booktbl.close();
 }
@@ -176,16 +181,14 @@ void load(bnode *head){
      cout<< "2.Delete\n";
      cout<< "3.Display\n";
      cout<< "4.Save\n";
-     cout<< "5.Load\n";
-     cout<< "6.Exit\n";
+     cout<< "5.Exit\n";
      cout<< "\nEnter your choice\n";
      cin>>ch;
      return ch;
  }
 int main(){
     create(& head);
-    
-    
+    load(&head);
     string b_id2;
     string b_name2;
     string b_a_name2;
@@ -231,9 +234,6 @@ int main(){
         save(head);
         break;
         case 5:
-        load(&head);
-        break;
-        case 6:
         cout<<"Good Bye!";
         break;
         default:
