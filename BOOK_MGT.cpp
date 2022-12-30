@@ -7,6 +7,7 @@ struct book{
     string b_name;
     string b_a_name;
     string b_st;
+    string s_id;
     book *nxt;
 };
 fstream booktbl;
@@ -14,6 +15,7 @@ string b_id2;
 string b_name2;
 string b_a_name2;
 string b_st2;
+string s_id2;
 typedef book *bnode;
 bnode head, b, pre,pos,last,b2,b3;
 int x,ch,y;
@@ -95,9 +97,13 @@ bnode prevb(bnode head, bnode b2, bnode &b3, string bid){
  void display(bnode head){
       if(head!=NULL)
         {
+            cout <<"\nBook ID  Book Name  Author Name  B Status  stu Id(if rented)";
         while (head!= NULL)
-        {cout <<"\n**********\n";
-            cout << head->b_id<<", "<< head->b_name<<", "<< head->b_a_name<<", "<< head->b_st;
+        {cout <<"\n**************************************************\n";
+            cout << head->b_id<<"     "<< head->b_name<<"       "<< head->b_a_name<<"     "<< head->b_st;
+            if(head->b_st=="r"){
+                cout<<"     "<<head->s_id;
+            }
             head = head->nxt;
         }
         }
@@ -115,6 +121,7 @@ void load(bnode *head){
         char s2[20];
         char s3[20];
         char s4[20];
+        char s5[20];
             while (row[j]!='\0')
             {
         b = getbnode();
@@ -123,6 +130,7 @@ void load(bnode *head){
             s2[a]='\0';
             s3[a]='\0';
             s4[a]='\0';
+            s5[a]='\0';
         }
         
             while (row[j]!='.')
@@ -149,13 +157,24 @@ void load(bnode *head){
             }
             b->b_a_name= s3;
             j++; i=0;
-            while (row[j]!=';')
+            while ((row[j]!=';')&&(row[j]!='.'))
             {
                 s4[i]=row[j];
                 i++;
                 j++;
             }
             b->b_st= s4;
+            if(row[j] == '.'){
+                j++; i=0;
+                
+                while (row[j]!=';')
+            {
+                s5[i]=row[j];
+                i++;
+                j++;
+            }
+            b->s_id=s5;
+            }
             j++; i=0;
             insertb(&(*head), b);  
           }
@@ -167,7 +186,11 @@ void load(bnode *head){
         booktbl.open("BookTable.txt", ios::out);
         while (head!= NULL)
         {
-            booktbl << head->b_id<<"."<< head->b_name<<"."<< head->b_a_name<<"."<<head->b_st<<";";
+            booktbl << head->b_id<<"."<< head->b_name<<"."<< head->b_a_name<<"."<<head->b_st;
+              if(head->b_st=="r"){
+                booktbl<<", "<<head->s_id;
+              }
+              booktbl<<";";
             head = head -> nxt;
         }
         booktbl.close();
@@ -189,9 +212,6 @@ void load(bnode *head){
 int main(){
     create(& head);
     load(&head);
-    string b_id2;
-    string b_name2;
-    string b_a_name2;
     do{
         ch =menu();
         switch (ch)
@@ -206,6 +226,11 @@ int main(){
         cin>>b_a_name2;
         cout<<"\nEnter Book Status\n";
         cin>>b_st2;
+        if(b_st2=="r")
+        {
+           cout<<"\nEnter the student id\n";
+        cin>>s_id2; 
+        }
         b=getbnode();
         b->b_id=b_id2;
         b->b_name=b_name2;
@@ -239,6 +264,6 @@ int main(){
         default:
             break;
         }
-    }while(ch!=6);
+    }while(ch!=5);
     return 0;
 }
