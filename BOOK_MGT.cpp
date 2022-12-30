@@ -26,7 +26,7 @@ void create(bnode *head){
 bool is_empty(bnode head){
     if(head ==NULL)
     return true;
-    else
+    else 
     return false;
 }
 bnode getbnode(){
