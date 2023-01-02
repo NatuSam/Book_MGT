@@ -10,15 +10,17 @@ struct book{
     string s_id;
     book *nxt;
 };
+typedef book *bnode;
 fstream booktbl;
 string b_id2;
 string b_name2;
 string b_a_name2;
 string b_st2;
 string s_id2;
-typedef book *bnode;
+
 bnode head, b, pre,pos,last,b2,b3;
 int x,ch,y;
+int siz=0;
 bool found;
 void create(bnode *head){
     *head = NULL;
@@ -62,6 +64,7 @@ void freebnode(bnode b){
      
   }
    }
+
 
 
 void updateb (bnode *head, bnode b, bnode prev){
@@ -137,6 +140,7 @@ void deleteb (bnode *head, bnode b, bnode prev){
      }
      cout<<"\n Node Deleted!";
   }
+
 bnode prevb(bnode head, bnode b2, bnode &b3, string bid){
      b2 = NULL;
      b3 = NULL;
@@ -164,12 +168,69 @@ bnode prevb(bnode head, bnode b2, bnode &b3, string bid){
             if(head->b_st=="r"){
                 cout<<"     "<<head->s_id;
             }
+            siz++;
             head = head->nxt;
         }
         }
         else
         cout<< "\nThe list is empty!\n ";
   }
+
+bnode sortprevb(bnode head, string bid){
+     b2 = NULL;
+     b3 = NULL;
+     int i=0;
+     found = false;
+     while(head != NULL && !found){
+        
+         if(head->b_id == bid){
+             b2 = head;
+             found = true;
+         }
+        else{
+            i=1;
+            b3 = head;
+            head = head ->nxt;
+        }
+     }
+     if(i==1)
+     return b3;
+     else if(i==0)
+     return NULL;
+ }
+bnode sort(bnode head){
+    bnode b= head;
+    bnode curr,curr2;
+    pos=NULL;
+
+    while(b->nxt!=NULL)
+    {
+    curr = b->nxt;
+    if(b->b_id>curr->b_id){
+    string temp_id= b->b_id;
+    pos = sortprevb(head,temp_id);
+    if(pos==NULL){
+        curr2 = curr->nxt;
+        head = curr;
+        b->nxt= curr2;
+        curr->nxt=b;
+    }
+    else{
+        pos->nxt=curr;
+        b->nxt=curr->nxt;
+        curr->nxt=b;
+
+    }
+    b=head;
+    }
+    else{
+        b=b->nxt;
+    }
+
+ }
+ return head;
+}
+
 void load(bnode *head){
         booktbl.open("BookTable.txt", ios::in);
         char row[100];
@@ -266,7 +327,8 @@ void load(bnode *head){
      cout<< "4.Save\n";
      cout<< "5.Update\n";
      cout<< "6.Search\n";
-     cout<< "7.Exit\n";
+     cout<< "7.Sort\n";
+     cout<< "8.Exit\n";
      cout<< "\nEnter your choice\n";
      cin>>ch;
      return ch;
@@ -340,12 +402,16 @@ int main(){
             }
       cout<<endl;
       break;
-        case 7:
+      case 7:
+      head = sort(head);
+      display(head);
+      break;
+        case 8:
         cout<<"Good Bye!";
         break;
         default:
             break;
         }
-    }while(ch!=7);
+    }while(ch!=8);
     return 0;
 }
