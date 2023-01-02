@@ -8,6 +8,7 @@ struct book{
     string b_a_name;
     string b_st;
     string s_id;
+    string b_ad;
     book *nxt;
 };
 typedef book *bnode;
@@ -17,10 +18,11 @@ string b_name2;
 string b_a_name2;
 string b_st2;
 string s_id2;
+string b_ad2;
 
 bnode head, b, pre,pos,last,b2,b3;
 int x,ch,y;
-int siz=0;
+
 bool found;
 void create(bnode *head){
     *head = NULL;
@@ -51,6 +53,7 @@ void freebnode(bnode b){
       *head = b;
      }
  }
+
    void insertb(bnode *head, bnode b){
      if(*head ==NULL)
      insertfirst(&(*head), b);
@@ -65,12 +68,11 @@ void freebnode(bnode b){
   }
    }
 
-
-
 void updateb (bnode *head, bnode b, bnode prev){
     
       a:
-      cout<<"which part to update?\n1.Book ID\n2.Book Name\n3.Book A_Name\n4.Book status\n5.student id\n";
+      cout<<"which part to update?\n";
+      cout<<"1.Book ID\n2.Book Name\n3.Book A_Name\n4.Book status\n5.student id\n 6.Book Address on table\n";
       cin>>ch;
       switch (ch)
       {
@@ -96,12 +98,21 @@ void updateb (bnode *head, bnode b, bnode prev){
       b->b_st=b_st2;
       if(b_st2 == "A"){
         b->s_id ='\0';
+        cout <<"Enter the table address of the book\n";
+      cin >>b_ad2;
+      b->b_ad=b_ad2;
       }
       else if(b->b_st == "r")
       {
         cout <<"Enter the Id of the student\n";
       cin >>s_id2;
       b->s_id=s_id2;
+      }
+      if(b->b_st == "a")
+      {
+      cout <<"Enter the Book Address on table\n";
+      cin>>b_ad2;
+      b->b_ad=b_ad2;
       }
     }
       break;
@@ -114,7 +125,17 @@ void updateb (bnode *head, bnode b, bnode prev){
       }
       else {
         cout<<"The book is available\n";
-        goto a;
+      }
+        break;
+    case 6:
+     if(b->b_st == "a")
+      {
+      cout <<"Enter the Book Address on table\n";
+      cin>>b_ad2;
+      b->b_ad=b_ad2;
+      }
+      else {
+        cout<<"The book is rented\n";
       }
         break;
       default:
@@ -123,6 +144,7 @@ void updateb (bnode *head, bnode b, bnode prev){
         break;
       }
      }
+
 void deleteb (bnode *head, bnode b, bnode prev){
      if(prev ==NULL)
      {
@@ -141,7 +163,7 @@ void deleteb (bnode *head, bnode b, bnode prev){
      cout<<"\n Node Deleted!";
   }
 
-bnode prevb(bnode head, bnode b2, bnode &b3, string bid){
+bnode searchb(bnode head, bnode b2, bnode &b3, string bid){
      b2 = NULL;
      b3 = NULL;
      found = false;
@@ -158,17 +180,20 @@ bnode prevb(bnode head, bnode b2, bnode &b3, string bid){
      
  return b2;
  }
+
  void display(bnode head){
       if(head!=NULL)
         {
-            cout <<"\nBook ID  Book Name  Author Name  B Status  stu Id(if rented)";
+            cout <<"\nBook ID  Book Name   Author Name   B Status   stu Id(if rented)   TBLAddress(if available)";
         while (head!= NULL)
-        {cout <<"\n**************************************************\n";
-            cout << head->b_id<<"     "<< head->b_name<<"       "<< head->b_a_name<<"     "<< head->b_st;
+        {cout <<"\n**************************************************************************\n";
+            cout << head->b_id<<"     "<< head->b_name<<"       "<< head->b_a_name<<"             "<< head->b_st;
             if(head->b_st=="r"){
-                cout<<"     "<<head->s_id;
+                cout<<"        "<<head->s_id;
             }
-            siz++;
+            if(head->b_st=="a"){
+                cout<<"                         "<<head->b_ad;
+            }
             head = head->nxt;
         }
         }
@@ -198,6 +223,7 @@ bnode sortprevb(bnode head, string bid){
      else if(i==0)
      return NULL;
  }
+
 bnode sort(bnode head){
     bnode b= head;
     bnode curr,curr2;
@@ -287,20 +313,23 @@ void load(bnode *head){
             b->b_st= s4;
             if(row[j] == '.'){
                 j++; i=0;
-                
                 while (row[j]!=';')
             {
                 s5[i]=row[j];
                 i++;
                 j++;
             }
+            if(b->b_st =="r")
             b->s_id=s5;
+            else
+            b->b_ad=s5;
             }
             j++; i=0;
             insertb(&(*head), b);  
           }
         booktbl.close();
 }
+
   void save(bnode head) {
       if(head!=NULL)
         {
@@ -309,7 +338,10 @@ void load(bnode *head){
         {
             booktbl << head->b_id<<"."<< head->b_name<<"."<< head->b_a_name<<"."<<head->b_st;
               if(head->b_st=="r"){
-                booktbl<<", "<<head->s_id;
+                booktbl<<"."<<head->s_id;
+              }
+              if(head->b_st=="a"){
+                booktbl<<"."<<head->b_ad;
               }
               booktbl<<";";
             head = head -> nxt;
@@ -319,6 +351,7 @@ void load(bnode *head){
         else
         cout<< "\nThe list is empty!\n";
   }
+
   int menu(){
      cout<< "\nMenu\n";
      cout<< "1.Insert\n";
@@ -368,7 +401,7 @@ int main(){
         {
             cout<<"\n enter the book id of the book to be deleted :\t";
             cin>>b_id2;
-            b= prevb(head,b2,b3,b_id2);
+            b= searchb(head,b2,b3,b_id2);
             if(b!=NULL)
             deleteb(&head,b,b3);
             else
@@ -386,7 +419,7 @@ int main(){
         case 5:
         cout<<"Enter the Book ID of the book to be updated\n";
         cin>>b_id2;
-        b= prevb(head,b2,b3,b_id2);
+        b= searchb(head,b2,b3,b_id2);
         if(b!=NULL)
             updateb(&head,b,b3);
             else
@@ -395,7 +428,7 @@ int main(){
         case 6:
         cout<<"Enter the Book ID of the book to be searched\n";
         cin>>b_id2;
-        b=prevb(head,b2,b3,b_id2);
+        b=searchb(head,b2,b3,b_id2);
         cout << b->b_id<<"     "<< b->b_name<<"       "<< b->b_a_name<<"     "<< b->b_st;
             if(b->b_st=="r"){
                 cout<<"     "<<b->s_id;
